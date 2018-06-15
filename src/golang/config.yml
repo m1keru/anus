@@ -1,0 +1,19 @@
+---
+ssh:
+  host: 10.2.21.2
+  port: 22
+  login: jane
+  password: ""
+  keypath: /home/tyurin/.ssh/id_rsa
+
+db:
+  prod_path: storage.db
+  test_path: test_stotage.db
+
+network:
+  listen: "0.0.0.0:8000"
+log:
+  type: "syslog"
+  path: "/var/log"
+  level: "INFO"
+
