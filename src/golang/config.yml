@@ -1,6 +1,6 @@
 ---
 ssh:
-  host: 10.2.21.2
+  host: 10.1.21.2
   port: 22
   login: jane
   password: ""

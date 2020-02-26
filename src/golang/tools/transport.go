@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"strings"
 	"time"
 
@@ -21,9 +22,11 @@ type SSHConfig struct {
 // RunOverSSH - выполняет указанную команду на указанном в SSHConfig хосте
 func RunOverSSH(config *SSHConfig, command string) ([]byte, error) {
 	sshConfig := &ssh.ClientConfig{
-		User:    config.Login,
-		Auth:    []ssh.AuthMethod{publicKeyFile(config.Keypath)},
-		Timeout: 15 * time.Second}
+		User:            config.Login,
+		Auth:            []ssh.AuthMethod{publicKeyFile(config.Keypath)},
+		Timeout:         15 * time.Second,
+		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error { return nil },
+	}
 	client, err := ssh.Dial("tcp", config.Host+":"+config.Port, sshConfig)
 	if err != nil {
 		return nil, err
@@ -110,10 +113,10 @@ var ChanStack = map[string]chan []byte{}
 
 func RunOverSshChan(config *SSHConfig, command string) (string, error) {
 	sshConfig := &ssh.ClientConfig{
-		User:    config.Login,
-		Auth:    []ssh.AuthMethod{publicKeyFile(config.Keypath)},
+		User:            config.Login,
+		Auth:            []ssh.AuthMethod{publicKeyFile(config.Keypath)},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout: 5 * time.Second}
+		Timeout:         5 * time.Second}
 	client, err := ssh.Dial("tcp", config.Host+":"+config.Port, sshConfig)
 	if err != nil {
 		return "", err
@@ -157,7 +160,7 @@ func chanReader(ior chan []byte, reader io.Reader, chanId string) {
 		_, err := reader.Read(b)
 		if err == io.EOF {
 			ior <- []byte("done")
-			delete(ChanStack,chanId)
+			delete(ChanStack, chanId)
 			close(ior)
 			b = nil
 			break

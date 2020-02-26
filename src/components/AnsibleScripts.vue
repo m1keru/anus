@@ -3,7 +3,7 @@
     <div class="col-md-4 scroll">
       <table class="table table-hover table-bordered table-sm table-dark">
         <tbody>
-        <tr v-for="script in ansiblescripts">
+        <tr v-bind:key="script" v-for="script in ansiblescripts">
           <th scope="row" style="width: 5%">{{ script.id }}</th>
           <!--<td>{{ script.name }}</td> -->
           <td style="width: 5%">{{ script.path }}</td>

@@ -4,14 +4,14 @@ import (
 	"flag"
 	"net/http"
 
-	"janesface/handlers"
-	"janesface/models"
-	"janesface/tools"
+	"golang/handlers"
+	"golang/models"
+	"golang/tools"
 
 	"github.com/gorilla/sessions"
-	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -27,15 +27,14 @@ func main() {
 	db := tools.InitDB(tools.Config.Db.ProdPath)
 	tools.Migrate(db)
 
-
-
 	if *sync {
 		sshConfig := tools.SSHConfig{
 			Host:     tools.Config.SSH.Host,
 			Port:     tools.Config.SSH.Port,
 			Login:    tools.Config.SSH.Login,
 			Password: tools.Config.SSH.Password,
-			Keypath:  tools.Config.SSH.Keypath}
+			Keypath:  tools.Config.SSH.Keypath,
+		}
 
 		scripts, err := tools.GetAnsibleScripts(&sshConfig)
 		tools.CheckErr(err)
